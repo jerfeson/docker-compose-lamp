@@ -1,0 +1,70 @@
+version: '3'
+services:
+  webserver:
+    build:
+      context: ./bin/webserver
+    container_name: lamp-php5.6-webserver
+    restart: always
+    expose:
+      - "9000"
+    ports:
+      - '80:80'
+      - '2222:22'
+      - '443:443'
+    links:
+      - redis
+      - mysql
+    environment:
+      PHP_XDEBUG_ENABLED: 1 # Set 1 to enable.
+
+      #WINDOWS
+      XDEBUG_CONFIG: remote_host=host.docker.internal
+
+      #UBUNTU
+      #XDEBUG_CONFIG: remote_host=172.17.0.1 #docker network ip.
+      #PHP_IDE_CONFIG: "serverName=xdebug-docker" #phpstorm variavel de ambiente com o nome do server configurado.
+    volumes:
+      - ${DOCUMENT_ROOT-./www}:/usr/share/apache2/www
+      - ${VHOSTS_DIR-./config/apache2/sites-enabled}:/etc/apache2/sites-enabled/
+      - ${PHP_INI-./config/php/php.ini}:/etc/php/5.6/apache2/conf.d/php.ini
+      - ${LOG_DIR-./logs/apache2}:/var/log/apache2
+  redis:
+    build: ./bin/redis
+    container_name: lamp-php5.6-redis
+    restart: always
+    ports:
+      - '6379:6379'
+  mysql:
+    build: ./bin/mysql
+    container_name: lamp-php5.6-mysql
+    restart: always
+    ports:
+      - '3306:3306'
+    volumes:
+      - '${MYSQL_DATA_DIR-./data/mysql}:/var/lib/mysql'
+      - '${MYSQL_LOG_DIR-./logs/mysql}:/var/log/mysql'
+    environment:
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+  phpmyadmin:
+    build: ./bin/phpmyadmin
+    container_name: lamp-php5.6-phpmyadmin
+    links:
+      - mysql
+    environment:
+      PMA_HOST: mysql
+
+      PMA_PORT: 3306
+    ports:
+      - '8080:80'
+    volumes:
+      - /sessions
+  blackfire:
+    container_name: lamp-php5.6-blackfire
+    build:
+      context: ./bin/blackfire
+    ports: ["8707"]
+    environment:
+      BLACKFIRE_SERVER_ID: "${BLACKFIRE_SERVER_ID}"
+      BLACKFIRE_SERVER_TOKEN: "${BLACKFIRE_SERVER_TOKEN}"
+      BLACKFIRE_CLIENT_ID: " ${BLACKFIRE_CLIENT_ID}"
+      BLACKFIRE_CLIENT_TOKEN:  "${BLACKFIRE_CLIENT_TOKEN}"
