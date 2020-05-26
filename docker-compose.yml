@@ -3,7 +3,7 @@ services:
   webserver:
     build:
       context: ./bin/webserver
-    container_name: lamp-php5.6-webserver
+    container_name: lamp-php7.2-webserver
     restart: always
     expose:
       - "9000"
@@ -15,28 +15,28 @@ services:
       - redis
       - mysql
     environment:
-      PHP_XDEBUG_ENABLED: 1 # Set 1 to enable.
+      PHP_XDEBUG_ENABLED: xdebug.remote_enable=1 # Set 1 to enable.
 
       #WINDOWS
-      XDEBUG_CONFIG: remote_host=host.docker.internal
+      XDEBUG_CONFIG: xdebug.remote_host=host.docker.internal
 
       #UBUNTU
       #XDEBUG_CONFIG: remote_host=172.17.0.1 #docker network ip.
-      #PHP_IDE_CONFIG: "serverName=xdebug-docker" #phpstorm variavel de ambiente com o nome do server configurado.
+      #PHP_IDE_CONFIG: "serverName=xdebug-docker" #phpstorm environment variable with the name of the configured server.
     volumes:
       - ${DOCUMENT_ROOT-./www}:/usr/share/apache2/www
       - ${VHOSTS_DIR-./config/apache2/sites-enabled}:/etc/apache2/sites-enabled/
-      - ${PHP_INI-./config/php/php.ini}:/etc/php/5.6/apache2/conf.d/php.ini
+      - ${PHP_INI-./config/php/php.ini}:/etc/php/7.2/apache2/conf.d/php.ini
       - ${LOG_DIR-./logs/apache2}:/var/log/apache2
   redis:
     build: ./bin/redis
-    container_name: lamp-php5.6-redis
+    container_name: lamp-php7.2-redis
     restart: always
     ports:
       - '6379:6379'
   mysql:
     build: ./bin/mysql
-    container_name: lamp-php5.6-mysql
+    container_name: lamp-php7.2-mysql
     restart: always
     ports:
       - '3306:3306'
@@ -47,7 +47,7 @@ services:
       MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
   phpmyadmin:
     build: ./bin/phpmyadmin
-    container_name: lamp-php5.6-phpmyadmin
+    container_name: lamp-php7.2-phpmyadmin
     links:
       - mysql
     environment:
@@ -59,7 +59,7 @@ services:
     volumes:
       - /sessions
   blackfire:
-    container_name: lamp-php5.6-blackfire
+    container_name: lamp-php7.2-blackfire
     build:
       context: ./bin/blackfire
     ports: ["8707"]

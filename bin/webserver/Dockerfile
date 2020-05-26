@@ -1,1 +1,1 @@
-FROM jerfeson/ap:php56
+FROM jerfeson/ap:php72
