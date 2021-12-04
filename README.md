@@ -4,7 +4,7 @@
 
 This is a basic #LAMP stack environment built using Docker Compose. It consists following:
 
-- PHP 7.2.X
+- PHP 8.X
 - Apache 
 - MySQL 5.7
 - phpMyAdmin
@@ -18,11 +18,11 @@ Clone this repository on your local computer. Run the `docker-compose up -d`.
 git clone https://github.com/jerfeson/docker-compose-lamp.git
 cd docker-compose-lamp/
 git fetch --all
-git checkout 7.2.x
+git checkout 8.X
 cp sample.env .env
 docker-compose up -d
 ```
-> Please make sure that you are using `7.2.x` branch.
+> Please make sure that you are using `8.X` branch.
 
 Your #LAMP stack is now ready!! You can access it via `http://localhost`.
 
@@ -75,7 +75,7 @@ docker-compose exec webserver bash
 ```
 ## PHP
 
-The installed version of PHP is 7.2.x
+The installed version of PHP is 8.X
 
 By default following extensions are installed.
 
